@@ -6,13 +6,17 @@ interface ProtectedRoutesProps {
   children: React.ReactElement;
 }
 
-const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
-  const { user } = useAuth();
-  console.log(user);
+const ProtectedRoutes: React.FC<ProtectedRoutesProps> = ({ children }) => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Show a loading indicator while checking auth status
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
+
   return children;
 };
 

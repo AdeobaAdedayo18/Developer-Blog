@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useAuth from "../context/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   email: z.string().min(1, { message: "Email is required" }),
@@ -14,6 +15,7 @@ type FormData = z.infer<typeof schema>;
 
 const SignUpForm = () => {
   const { registerMethod } = useAuth();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -92,14 +94,19 @@ const SignUpForm = () => {
             type="submit"
             className="w-full bg-black text-white py-2  rounded-md hover:bg-transparent hover:border-black hover:text-black"
           >
-            Sign in
+            Sign up
           </button>
         </form>
 
         <p className="text-center mt-6 text-sm text-gray-600">
           Already have an account{" "}
-          <a href="#" className="text-blue-500 underline">
-            Sign up
+          <a
+            onClick={() => {
+              navigate("/login");
+            }}
+            className="text-blue-500 underline "
+          >
+            Log in
           </a>
         </p>
       </div>

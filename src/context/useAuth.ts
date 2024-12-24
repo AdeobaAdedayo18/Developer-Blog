@@ -4,37 +4,38 @@ import { useNavigate } from "react-router-dom";
 import { loginAPI, registerAPI } from "../services/AuthServices";
 import axios from "axios";
 
-interface userContextType {
-  user: User | null;
-  token: string | null;
-  registerMethod: (username: string, password: string, email: string) => void;
-  loginUser: (username: string, password: string) => void;
-  logoutMethod: () => void;
-  isLoggedIn: () => boolean;
-}
+// interface userContextType {
+//   user: User | null;
+//   token: string | null;
+//   registerMethod: (username: string, password: string, email: string) => void;
+//   loginUser: (username: string, password: string) => void;
+//   logoutMethod: () => void;
+//   isLoggedIn: () => boolean;
+// }
 
-interface UserProviderProps {
-  children: React.ReactNode;
-}
+// interface UserProviderProps {
+//   children: React.ReactNode;
+// }
 
 // const UserContext = createContext<userContextType>({} as userContextType);
 
 const useAuth = () => {
   const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
+  const [reftoken, setrefToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
     const token = localStorage.getItem("token");
+    const reftoken = localStorage.getItem("token");
     if (user && token) {
       setUser(JSON.parse(user));
       setToken(token);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
-
-    setIsLoading(true);
+    setIsLoading(false); // Set loading to false after checking local storage
   }, []);
 
   const registerMethod = async (
@@ -46,6 +47,7 @@ const useAuth = () => {
       .then((res) => {
         if (res) {
           localStorage.setItem("token", res.data.access_token);
+          localStorage.setItem("reftoken", res.data.refresh_token);
           const userObj = {
             user_id: res.data.user_id,
             username: res.data.username,
@@ -53,9 +55,10 @@ const useAuth = () => {
           };
           localStorage.setItem("user", JSON.stringify(userObj));
           setToken(res?.data.access_token);
+          setrefToken(res?.data.refresh_token);
           setUser(userObj!);
           alert("User registered successfully");
-          navigate("/");
+          navigate("/login");
         }
       })
       .catch((e) => {
@@ -68,17 +71,22 @@ const useAuth = () => {
       .then((res) => {
         if (res) {
           localStorage.setItem("token", res.data.access_token);
+          localStorage.setItem("reftoken", res.data.refresh_token);
           const userObj = {
             user_id: res.data.user_id,
             username: res.data.username,
           };
           localStorage.setItem("user", JSON.stringify(userObj));
           setToken(res?.data.access_token);
+          setrefToken(res?.data.refresh_token);
           setUser(userObj!);
           console.log(res.data);
 
           alert("User registered successfully");
+          console.log("logged in");
+          
           navigate("/");
+          console.log("redireted");
         }
       })
       .catch((e) => {
@@ -93,27 +101,23 @@ const useAuth = () => {
   const logoutMethod = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    localStorage.removeItem("reftoken");
     setUser(null);
     setToken(null);
+    setrefToken(null);
     navigate("/login");
   };
 
-  return (
-    // <UserContext.Provider
-    //   value={
-    {
-      loginUser,
-      user,
-      token,
-      logoutMethod,
-      registerMethod,
-      isLoggedIn,
-    }
-    // }
-    // >
-    //   {isLoading ? children : null}
-    // {/* </UserContext.Provider> */}
-  );
+  return {
+    loginUser,
+    user,
+    token,
+    reftoken,
+    logoutMethod,
+    registerMethod,
+    isLoggedIn,
+    isLoading, // Return isLoading state
+  };
 };
 
 export default useAuth;

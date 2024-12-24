@@ -4,15 +4,19 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 const router = createBrowserRouter([
+  // {
+  //   path: "/",
+  //   element: (
+  //     <ProtectedRoutes>
+  //       <HomePage></HomePage>
+  //     </ProtectedRoutes>
+  //   ),
+  // },
+
   {
     path: "/",
-    element: (
-      <ProtectedRoutes>
-        <HomePage></HomePage>
-      </ProtectedRoutes>
-    ),
+    element: <HomePage></HomePage>,
   },
-
   {
     path: "/login",
     element: <LoginPage></LoginPage>,

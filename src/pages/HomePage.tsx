@@ -1,6 +1,8 @@
 import React from "react";
+import useAuth from "../context/useAuth";
 
 const HomePage = () => {
+  const { logoutMethod } = useAuth();
   return (
     <div className="homepage">
       <header className="header">
@@ -18,6 +20,9 @@ const HomePage = () => {
             </li>
             <li>
               <a href="#contact">Contact</a>
+            </li>
+            <li>
+              <a onClick={() => logoutMethod()}>Logout</a>
             </li>
           </ul>
         </nav>

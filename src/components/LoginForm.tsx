@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useAuth from "../context/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   email: z.string().min(1, { message: "Email is required" }),
@@ -12,6 +13,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -26,7 +28,7 @@ const LoginForm = () => {
     } catch (e) {
       console.log(e);
     }
-    reset();
+    // reset();
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
@@ -89,7 +91,10 @@ const LoginForm = () => {
 
         <p className="text-center mt-6 text-sm text-gray-600">
           Don’t have an account?{" "}
-          <a href="#" className="text-blue-500 underline">
+          <a
+            onClick={() => navigate("/signup")}
+            className="text-blue-500 underline"
+          >
             Sign up
           </a>
         </p>
